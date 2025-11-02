@@ -1,0 +1,790 @@
+{
+  "name": "Fluxo de entrevistas",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Contratação",
+        "formDescription": "Realize o preenchimento dos dados no formulário, e aguarde o nosso contato.",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nome completo",
+              "placeholder": "Digite seu nome...",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "E-mail",
+              "fieldType": "email",
+              "placeholder": "Digite seu melhor e-mail",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Função",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Desenvolvedor"
+                  },
+                  {
+                    "option": "Social Media"
+                  },
+                  {
+                    "option": "Marketing"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Pretensão Salarial",
+              "fieldType": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -2960,
+        -336
+      ],
+      "id": "85793993-af88-4df6-9251-3d754b70c96e",
+      "name": "Recebimento candidatura",
+      "webhookId": "dde676db-8bf1-44fb-9df8-b7b5f3dcbe92"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "2a41a522-1c52-45c1-8c87-66c885172a41",
+              "leftValue": "={{ $json['Pretensão Salarial'] }}",
+              "rightValue": 3000,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -2672,
+        -336
+      ],
+      "id": "1b27e67b-c35c-4e94-9bb0-d19a802a8455",
+      "name": "Verifica salário"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+        "subject": "Obrigada pelo interesse na vaga",
+        "emailType": "text",
+        "message": "=Olá, {{ $('Recebimento candidatura').item.json['Nome completo'] }}!\n\nInfelizmente seu salário é incompatível com a vaga. \n\nMuito obrigada por se candidatar e não desista. ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -2336,
+        -416
+      ],
+      "id": "8965ffb4-ff41-49c4-8ce6-87d52edd0c06",
+      "name": "Salário maior",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA",
+          "mode": "list",
+          "cachedResultName": "Planilha entrevista",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Nome": "={{ $('Recebimento candidatura').item.json['Nome completo'] }}",
+            "E-mail": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+            "Cargo": "={{ $('Recebimento candidatura').item.json['Função'] }}",
+            "Pretensão salarial": "={{ $('Recebimento candidatura').item.json['Pretensão Salarial'] }}",
+            "Data cadastro": "={{ $now.format('dd/MM/yyyy') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cargo",
+              "displayName": "Cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pretensão salarial",
+              "displayName": "Pretensão salarial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data cadastro",
+              "displayName": "Data cadastro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Entrevista",
+              "displayName": "Entrevista",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -2432,
+        -240
+      ],
+      "id": "1cf600e0-8c2b-4b56-8dd6-97937f80e9a6",
+      "name": "Cadastrar usuário",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "98XVq52GYz8uxc8e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.Cargo }}",
+                    "rightValue": "Marketing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "43a78cea-33ef-4f40-b822-5b1b5268d07d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Mkt"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c4426464-e11a-4554-8301-3cdc04ef20c5",
+                    "leftValue": "={{ $json.Cargo }}",
+                    "rightValue": "Social Media",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "SM"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f412de3e-79ae-4ddc-aae1-17da90dacb24",
+                    "leftValue": "={{ $json.Cargo }}",
+                    "rightValue": "Desenvolvedor",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Dev"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -2224,
+        -240
+      ],
+      "id": "5c823a8e-744a-417e-970a-108a10cfa74d",
+      "name": "Verifica cargo"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+        "subject": "=Atualização para vaga de  {{ $json.Cargo }}",
+        "emailType": "text",
+        "message": "=Olá, {{ $('Recebimento candidatura').item.json['Nome completo'] }}!\n\nEm breve entraremos em contato para a vaga de {{ $json.Cargo }}\n\nObrigado pelo interesse.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1968,
+        -448
+      ],
+      "id": "2482e01d-89dd-40ac-ac77-bfff0218c671",
+      "name": "Email para mkt",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+        "subject": "=Atualização para vaga de  {{ $json.Cargo }}",
+        "emailType": "text",
+        "message": "=Olá, {{ $('Recebimento candidatura').item.json['Nome completo'] }}!\n\nEm breve entraremos em contato para a vaga de {{ $json.Cargo }}\n\nExperiência com edição de vídeos\n\nObrigado pelo interesse.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1936,
+        -272
+      ],
+      "id": "1567821a-9f47-4bb0-9b1a-0c04a406ebb7",
+      "name": "Email para SM",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+        "subject": "=Atualização para vaga de  {{ $json.Cargo }}",
+        "emailType": "text",
+        "message": "=Olá, {{ $('Recebimento candidatura').item.json['Nome completo'] }}!\n\nEm breve entraremos em contato para a vaga de {{ $json.Cargo }}\n\nExperiência com linguagem JavaScript\n\nObrigado pelo interesse.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1936,
+        -64
+      ],
+      "id": "e9ae3b8e-ff52-4f62-90e3-d5cbf69b0a42",
+      "name": "Email para Dev",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -1520,
+        -240
+      ],
+      "id": "b05ae38a-31a2-4356-a223-abbb35bb4427",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "sendTo": "=marilisescabral@gmail.com",
+        "subject": "=Novo candidato!",
+        "emailType": "text",
+        "message": "=Olá, um novo candidato foi adicionado à planilha.\n\nPara a vaga de: {{ $('Recebimento candidatura').item.json['Função'] }}\n\nPor favor, analise o candidato e dê o feedback para posseguir ou não para entrevista.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -1264,
+        -240
+      ],
+      "id": "1868cb1e-4bf8-4dbb-96ce-aaf0a82efe64",
+      "name": "Email gestor da vaga",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "5253232c-f7ed-4252-abe2-dc54bd84c283",
+              "leftValue": "={{ $('Recebimento candidatura').item.json[\"Pretensão Salarial\"] }}",
+              "rightValue": 2000,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.2,
+      "position": [
+        -1712,
+        -528
+      ],
+      "id": "62eb951f-eca8-43fe-a103-069a331c34bf",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "marilisescabral@gmail.com",
+          "mode": "list",
+          "cachedResultName": "marilisescabral@gmail.com"
+        },
+        "start": "={{ $now.plus(2, 'day') }}",
+        "additionalFields": {
+          "attendees": [
+            "={{ $('Recebimento candidatura').item.json['E-mail'] }}"
+          ],
+          "summary": "=Entrevista empresa X {{ $('Recebimento candidatura').item.json['Função'] }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendar",
+      "typeVersion": 1.3,
+      "position": [
+        -1504,
+        -528
+      ],
+      "id": "dd9640f5-6c60-4bdc-bc0a-231f00d242e2",
+      "name": "Agendamento entrevista",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "9IFOgXlQ6MCf9M1U",
+          "name": "Google Calendar account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA",
+          "mode": "list",
+          "cachedResultName": "Planilha entrevista",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Página1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1MhN5b-c-N-QcYXePiME77ABwwU_ekOsOOM1662vLRzA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "E-mail": "={{ $('Recebimento candidatura').item.json['E-mail'] }}",
+            "Entrevista": "={{ $json.htmlLink }}"
+          },
+          "matchingColumns": [
+            "E-mail"
+          ],
+          "schema": [
+            {
+              "id": "Nome",
+              "displayName": "Nome",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "E-mail",
+              "displayName": "E-mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Cargo",
+              "displayName": "Cargo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Pretensão salarial",
+              "displayName": "Pretensão salarial",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data cadastro",
+              "displayName": "Data cadastro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Entrevista",
+              "displayName": "Entrevista",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1232,
+        -528
+      ],
+      "id": "857c9307-d995-4e0d-9866-ee46e6359801",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "98XVq52GYz8uxc8e",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "=marilisescabral@gmail.com",
+        "subject": "=Entrevista empresa X",
+        "emailType": "text",
+        "message": "=A entrevista foi agendada para {{ $('Agendamento entrevista').item.json.end.dateTime}}\no link do agendamento é {{ $('Agendamento entrevista').item.json.htmlLink }}\n\n",
+        "options": {
+          "ccList": "marilisescabral@gmail.com"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        -944,
+        -512
+      ],
+      "id": "53461313-2a0b-49ca-8d42-e354c5b21511",
+      "name": "Entrevista agendada",
+      "webhookId": "023074b0-7db5-425c-b3e5-f1a1904ebaef",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "slD7oMo1xQolpTSI",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Recebimento candidatura": [
+      {
+        "json": {
+          "Nome completo": "Marilise",
+          "E-mail": "marilisescabral@gmail.com",
+          "Função": "Marketing",
+          "Pretensão Salarial": 2000,
+          "submittedAt": "2025-10-28T14:04:17.876-03:00",
+          "formMode": "test"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Recebimento candidatura": {
+      "main": [
+        [
+          {
+            "node": "Verifica salário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica salário": {
+      "main": [
+        [
+          {
+            "node": "Salário maior",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Cadastrar usuário",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cadastrar usuário": {
+      "main": [
+        [
+          {
+            "node": "Verifica cargo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verifica cargo": {
+      "main": [
+        [
+          {
+            "node": "Email para mkt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email para SM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Email para Dev",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email para mkt": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email para SM": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email para Dev": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "No Operation, do nothing": {
+      "main": [
+        [
+          {
+            "node": "Email gestor da vaga",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Agendamento entrevista",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agendamento entrevista": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Entrevista agendada",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "0df2da8e-3713-43be-b2c2-cf0c412182d8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dada4c5445e17aa5d790aa495d178b1f341ef3fa8df8abbe00e1a958430dcf95"
+  },
+  "id": "GHsZCd0jV5HX0A80",
+  "tags": [
+    {
+      "updatedAt": "2025-10-28T16:15:49.040Z",
+      "createdAt": "2025-10-28T16:15:49.040Z",
+      "id": "UR4BypajKZ1im8oJ",
+      "name": "Fluxo"
+    }
+  ]
+}
